@@ -1,0 +1,74 @@
+{
+ "properties": {
+  "displayName": "Audit HTTPS only access for a Web Application",
+  "policyType": "Custom",
+  "mode": "All",
+  "description": "Use of HTTPS ensures server/service authentication and protects data in transit from network layer eavesdropping attacks.",
+  "metadata": {
+   "category": "Security Center"
+  },
+  "parameters": {
+   "effect": {
+    "type": "String",
+    "metadata": {
+     "displayName": "Effect",
+     "description": "Enable or disable the execution of the policy"
+    },
+    "allowedValues": [
+     "AuditIfNotExists",
+     "Disabled"
+    ],
+    "defaultValue": "AuditIfNotExists"
+   }
+  },
+  "policyRule": {
+   "if": {
+    "allOf": [
+     {
+      "field": "type",
+      "equals": "microsoft.Web/sites"
+     },
+     {
+      "anyOf": [
+       {
+        "field": "kind",
+        "equals": "app"
+       },
+       {
+        "field": "kind",
+        "equals": "WebApp"
+       },
+       {
+        "field": "kind",
+        "equals": "app,linux"
+       },
+       {
+        "field": "kind",
+        "equals": "app,linux,container"
+       }
+      ]
+     }
+    ]
+   },
+   "then": {
+    "effect": "[parameters('effect')]",
+    "details": {
+     "type": "Microsoft.Security/complianceResults",
+     "name": "EnforceHttps",
+     "existenceCondition": {
+      "field": "Microsoft.Security/complianceResults/resourceStatus",
+      "in": [
+       "Monitored",
+       "NotApplicable",
+       "OffByPolicy",
+       "Healthy"
+      ]
+     }
+    }
+   }
+  }
+ },
+ "id": "/subscriptions/afc11291-9826-46be-b852-70349146ddf8/providers/Microsoft.Authorization/policyDefinitions/5ef3cc87-89f3-4c8a-bbfa-76b889c386c0",
+ "type": "Microsoft.Authorization/policyDefinitions",
+ "name": "5ef3cc87-89f3-4c8a-bbfa-76b889c386c0"
+}
